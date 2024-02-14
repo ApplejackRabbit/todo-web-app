@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Flex, List, Typography } from "antd";
+import AddTodoForm from "./AddTodoForm";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
@@ -27,6 +28,7 @@ const HomePage: React.FC = () => {
   return (
     <Flex style={containerStyle} vertical gap="middle">
       <Title>To-Do</Title>
+      <AddTodoForm />
       <List
         bordered
         itemLayout="horizontal"
