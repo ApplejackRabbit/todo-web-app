@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Flex, List, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
+import EditTodoModal from "./EditTodoModal";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
@@ -20,28 +21,43 @@ const fakeData: TodoItemType[] = [
 
 const HomePage: React.FC = () => {
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
+  const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const handleEdit = useCallback(() => {
+    setEditModalOpen(true);
+  }, []);
+
+  const handleEditModalCancel = useCallback(() => {
+    setEditModalOpen(false);
+  }, []);
 
   useEffect(() => {
     setTodoData(fakeData);
   }, []);
 
   return (
-    <Flex style={containerStyle} vertical gap="middle">
-      <Title>To-Do</Title>
-      <AddTodoForm />
-      <List
-        bordered
-        itemLayout="horizontal"
-        dataSource={todoData}
-        renderItem={(item) => (
-          <List.Item
-            actions={[<Button>Edit</Button>, <Button danger>Delete</Button>]}
-          >
-            <List.Item.Meta title={<Title level={5}>{item.name}</Title>} />
-          </List.Item>
-        )}
-      />
-    </Flex>
+    <>
+      <Flex style={containerStyle} vertical gap="middle">
+        <Title>To-Do</Title>
+        <AddTodoForm />
+        <List
+          bordered
+          itemLayout="horizontal"
+          dataSource={todoData}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button onClick={handleEdit}>Edit</Button>,
+                <Button danger>Delete</Button>,
+              ]}
+            >
+              <List.Item.Meta title={<Title level={5}>{item.name}</Title>} />
+            </List.Item>
+          )}
+        />
+      </Flex>
+      <EditTodoModal open={isEditModalOpen} onCancel={handleEditModalCancel} />
+    </>
   );
 };
 
