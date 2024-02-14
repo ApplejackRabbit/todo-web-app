@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Flex, Form, Input, Typography } from "antd";
 
 const { Title } = Typography;
@@ -12,12 +12,25 @@ interface FormValues {
 }
 
 const AddTodoForm: React.FC<Props> = (props) => {
+  const [form] = Form.useForm();
+
   const { onAddTodo } = props;
 
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const onFinish = useCallback(
-    (values: FormValues) => {
+    async (values: FormValues) => {
       const { name } = values;
-      onAddTodo && onAddTodo(name);
+      if (onAddTodo) {
+        setLoading(true);
+        try {
+          await onAddTodo(name);
+          form.resetFields();
+        } catch (error) {
+        } finally {
+          setLoading(false);
+        }
+      }
     },
     [onAddTodo]
   );
@@ -25,7 +38,7 @@ const AddTodoForm: React.FC<Props> = (props) => {
   return (
     <Flex vertical gap="small">
       <Title level={5}>Add a To-Do</Title>
-      <Form name="add-todo" layout="vertical" onFinish={onFinish}>
+      <Form form={form} name="add-todo" layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="name"
           label="Name"
@@ -37,10 +50,10 @@ const AddTodoForm: React.FC<Props> = (props) => {
             },
           ]}
         >
-          <Input />
+          <Input disabled={isLoading} />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             Add
           </Button>
         </Form.Item>

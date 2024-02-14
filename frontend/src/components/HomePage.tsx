@@ -23,7 +23,16 @@ const HomePage: React.FC = () => {
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
 
-  const handleAddTodo = useCallback(async (name: string) => {}, []);
+  const handleAddTodo = useCallback(async (name: string) => {
+    // Simulate calling API to add a To-Do
+    try {
+      await new Promise((resolve, reject) => {
+        setTimeout(reject, 1000);
+      });
+    } catch (error) {
+      throw error;
+    }
+  }, []);
 
   const handleEdit = useCallback(() => {
     setEditModalOpen(true);
