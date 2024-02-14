@@ -23,6 +23,8 @@ const HomePage: React.FC = () => {
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
 
+  const handleAddTodo = useCallback(async (name: string) => {}, []);
+
   const handleEdit = useCallback(() => {
     setEditModalOpen(true);
   }, []);
@@ -50,7 +52,7 @@ const HomePage: React.FC = () => {
     <>
       <Flex style={containerStyle} vertical gap="middle">
         <Title>To-Do</Title>
-        <AddTodoForm />
+        <AddTodoForm onAddTodo={handleAddTodo} />
         <List
           bordered
           itemLayout="horizontal"
