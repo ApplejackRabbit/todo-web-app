@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Flex, List, Typography } from "antd";
+import { Button, Flex, List, Modal, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
 import type TodoItemType from "../types/TodoItemType";
@@ -27,6 +27,17 @@ const HomePage: React.FC = () => {
     setEditModalOpen(true);
   }, []);
 
+  const handleDelete = useCallback(() => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this To-Do?",
+      okButtonProps: { danger: true },
+      okText: "Delete",
+      onOk: async () => {
+        // Delete the To-Do item
+      },
+    });
+  }, []);
+
   const handleEditModalCancel = useCallback(() => {
     setEditModalOpen(false);
   }, []);
@@ -48,7 +59,9 @@ const HomePage: React.FC = () => {
             <List.Item
               actions={[
                 <Button onClick={handleEdit}>Edit</Button>,
-                <Button danger>Delete</Button>,
+                <Button danger onClick={handleDelete}>
+                  Delete
+                </Button>,
               ]}
             >
               <List.Item.Meta title={<Title level={5}>{item.name}</Title>} />
