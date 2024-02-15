@@ -29,8 +29,8 @@ const EditTodoModal: React.FC<Props> = (props) => {
     async (values: FormValues) => {
       const { name } = values;
       if (defaultItem && onEditTodo) {
+        setLoading(true);
         try {
-          setLoading(true);
           await onEditTodo(defaultItem, name);
         } catch (error) {
         } finally {

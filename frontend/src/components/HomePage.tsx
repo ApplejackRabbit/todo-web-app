@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Flex, List, message, Modal, Typography } from "antd";
+import { Button, Flex, List, message, Modal, Skeleton, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
+
+const skeletonCount = 5;
 
 const containerStyle: React.CSSProperties = {
   paddingLeft: "20%",
@@ -23,6 +25,7 @@ const HomePage: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const [itemToEdit, setItemToEdit] = useState<TodoItemType | null>(null);
 
@@ -113,9 +116,49 @@ const HomePage: React.FC = () => {
     [handleDeleteTodo]
   );
 
+  const reloadData = async () => {
+    // Simulate calling API to fetch all To-Dos
+    setLoading(true);
+    try {
+      const data = await new Promise<TodoItemType[]>((resolve, reject) => {
+        setTimeout(() => {
+          resolve(fakeData);
+        }, 1000);
+      });
+      setTodoData(data);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setTodoData(fakeData);
+    reloadData();
   }, []);
+
+  const makeDummyData = (): TodoItemType[] =>
+    Array(skeletonCount)
+      .fill(null)
+      .map((_, i) => ({ id: `${i}`, name: "" }));
+
+  const makeListItemElement = (item: TodoItemType) => (
+    <List.Item
+      actions={[
+        <Button onClick={() => openEditModal(item)}>Edit</Button>,
+        <Button danger onClick={() => prepareDelete(item)}>
+          Delete
+        </Button>,
+      ]}
+    >
+      <List.Item.Meta title={item.name} />
+    </List.Item>
+  );
+
+  const makeSkeletonElement = () => (
+    <List.Item>
+      <Skeleton title paragraph={false} loading active />
+    </List.Item>
+  );
 
   return (
     <>
@@ -126,19 +169,8 @@ const HomePage: React.FC = () => {
         <List
           bordered
           itemLayout="horizontal"
-          dataSource={todoData}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <Button onClick={() => openEditModal(item)}>Edit</Button>,
-                <Button danger onClick={() => prepareDelete(item)}>
-                  Delete
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta title={item.name} />
-            </List.Item>
-          )}
+          dataSource={isLoading ? makeDummyData() : todoData}
+          renderItem={isLoading ? makeSkeletonElement : makeListItemElement}
         />
       </Flex>
       <EditTodoModal
