@@ -53,6 +53,20 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  const handleEditTodo = useCallback(
+    async (oldItem: TodoItemType, newName: string) => {
+      // Simulate calling API to edit a To-Do
+      try {
+        await new Promise((resolve, reject) => {
+          setTimeout(resolve, 1000);
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    []
+  );
+
   const handleEdit = useCallback((item: TodoItemType) => {
     setItemInEdit(item);
   }, []);
@@ -104,6 +118,7 @@ const HomePage: React.FC = () => {
         open={!!itemInEdit}
         onCancel={handleEditModalCancel}
         defaultItem={itemInEdit}
+        onEditTodo={handleEditTodo}
       />
     </>
   );

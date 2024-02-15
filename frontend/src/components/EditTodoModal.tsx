@@ -7,6 +7,7 @@ interface Props {
   open?: ModalProps["open"];
   onCancel?: ModalProps["onCancel"];
   defaultItem?: TodoItemType | null;
+  onEditTodo?: (oldItem: TodoItemType, newName: string) => Promise<void>;
 }
 
 interface FormValues {
@@ -16,15 +17,25 @@ interface FormValues {
 const EditTodoModal: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
 
-  const { open, onCancel, defaultItem } = props;
+  const { open, onCancel, defaultItem, onEditTodo } = props;
 
   const handleOk = useCallback(() => {
     form.submit();
   }, []);
 
-  const onFinish = useCallback((values: FormValues) => {
-    const { name } = values;
-  }, []);
+  const onFinish = useCallback(
+    async (values: FormValues) => {
+      const { name } = values;
+      if (defaultItem && onEditTodo) {
+        try {
+          await onEditTodo(defaultItem, name);
+        } catch (error) {
+        } finally {
+        }
+      }
+    },
+    [defaultItem, onEditTodo]
+  );
 
   const formItemExtraProps = {
     ...(defaultItem && { initialValue: defaultItem.name }),
