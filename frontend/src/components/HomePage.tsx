@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
 
-  const [itemInEdit, setItemInEdit] = useState<TodoItemType | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<TodoItemType | null>(null);
 
   const showSuccessMessage = (content: string) => {
     messageApi.open({
@@ -67,11 +67,15 @@ const HomePage: React.FC = () => {
     []
   );
 
-  const handleEdit = useCallback((item: TodoItemType) => {
-    setItemInEdit(item);
+  const prepareEdit = useCallback((item: TodoItemType) => {
+    setItemToEdit(item);
   }, []);
 
-  const handleDelete = useCallback(() => {
+  const handleEditModalCancel = useCallback(() => {
+    setItemToEdit(null);
+  }, []);
+
+  const prepareDelete = useCallback(() => {
     Modal.confirm({
       title: "Are you sure you want to delete this To-Do?",
       okButtonProps: { danger: true },
@@ -80,10 +84,6 @@ const HomePage: React.FC = () => {
         // Delete the To-Do item
       },
     });
-  }, []);
-
-  const handleEditModalCancel = useCallback(() => {
-    setItemInEdit(null);
   }, []);
 
   useEffect(() => {
@@ -103,8 +103,8 @@ const HomePage: React.FC = () => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={() => handleEdit(item)}>Edit</Button>,
-                <Button danger onClick={handleDelete}>
+                <Button onClick={() => prepareEdit(item)}>Edit</Button>,
+                <Button danger onClick={prepareDelete}>
                   Delete
                 </Button>,
               ]}
@@ -115,9 +115,9 @@ const HomePage: React.FC = () => {
         />
       </Flex>
       <EditTodoModal
-        open={!!itemInEdit}
+        open={!!itemToEdit}
         onCancel={handleEditModalCancel}
-        defaultItem={itemInEdit}
+        defaultItem={itemToEdit}
         onEditTodo={handleEditTodo}
       />
     </>
