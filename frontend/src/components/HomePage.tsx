@@ -23,7 +23,8 @@ const HomePage: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
-  const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const [itemToEdit, setItemToEdit] = useState<TodoItemType | null>(null);
 
   const showSuccessMessage = (content: string) => {
     messageApi.open({
@@ -39,6 +40,25 @@ const HomePage: React.FC = () => {
     });
   };
 
+  const prepareEdit = useCallback((item: TodoItemType) => {
+    setItemToEdit(item);
+  }, []);
+
+  const endEdit = useCallback(() => {
+    setItemToEdit(null);
+  }, []);
+
+  const prepareDelete = useCallback(() => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this To-Do?",
+      okButtonProps: { danger: true },
+      okText: "Delete",
+      onOk: async () => {
+        // Delete the To-Do item
+      },
+    });
+  }, []);
+
   const handleAddTodo = useCallback(async (name: string) => {
     // Simulate calling API to add a To-Do
     try {
@@ -52,24 +72,27 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
-  const handleEdit = useCallback(() => {
-    setEditModalOpen(true);
-  }, []);
-
-  const handleDelete = useCallback(() => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this To-Do?",
-      okButtonProps: { danger: true },
-      okText: "Delete",
-      onOk: async () => {
-        // Delete the To-Do item
-      },
-    });
-  }, []);
-
-  const handleEditModalCancel = useCallback(() => {
-    setEditModalOpen(false);
-  }, []);
+  const handleEditTodo = useCallback(
+    async (oldItem: TodoItemType, newName: string) => {
+      const { name: oldName } = oldItem;
+      // Simulate calling API to edit a To-Do
+      try {
+        await new Promise((resolve, reject) => {
+          setTimeout(resolve, 1000);
+        });
+        endEdit();
+        showSuccessMessage(
+          `"${oldName}" is changed to "${newName}" successfully`
+        );
+      } catch (error) {
+        showErrorMessage(
+          `Error encountered when changing "${oldName}" to "${newName}"`
+        );
+        throw error;
+      }
+    },
+    [endEdit]
+  );
 
   useEffect(() => {
     setTodoData(fakeData);
@@ -88,8 +111,8 @@ const HomePage: React.FC = () => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={handleEdit}>Edit</Button>,
-                <Button danger onClick={handleDelete}>
+                <Button onClick={() => prepareEdit(item)}>Edit</Button>,
+                <Button danger onClick={prepareDelete}>
                   Delete
                 </Button>,
               ]}
@@ -99,7 +122,12 @@ const HomePage: React.FC = () => {
           )}
         />
       </Flex>
-      <EditTodoModal open={isEditModalOpen} onCancel={handleEditModalCancel} />
+      <EditTodoModal
+        open={!!itemToEdit}
+        onCancel={endEdit}
+        defaultItem={itemToEdit}
+        onEditTodo={handleEditTodo}
+      />
     </>
   );
 };

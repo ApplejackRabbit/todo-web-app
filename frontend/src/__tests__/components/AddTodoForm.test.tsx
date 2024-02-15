@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import AddTodoForm from "../components/AddTodoForm";
+import AddTodoForm from "../../components/AddTodoForm";
 
 describe("AddTodoForm", () => {
   const inputErrorMessage = "Name must not be empty!";
