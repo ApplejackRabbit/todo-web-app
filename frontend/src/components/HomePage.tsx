@@ -136,7 +136,7 @@ const HomePage: React.FC = () => {
                 </Button>,
               ]}
             >
-              <List.Item.Meta title={<Title level={5}>{item.name}</Title>} />
+              <List.Item.Meta title={item.name} />
             </List.Item>
           )}
         />
