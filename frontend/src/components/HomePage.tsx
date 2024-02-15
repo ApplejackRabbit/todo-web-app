@@ -43,6 +43,22 @@ const HomePage: React.FC = () => {
     });
   };
 
+  const reloadData = async () => {
+    // Simulate calling API to fetch all To-Dos
+    setLoading(true);
+    try {
+      const data = await new Promise<TodoItemType[]>((resolve, reject) => {
+        setTimeout(() => {
+          resolve(fakeData);
+        }, 1000);
+      });
+      setTodoData(data);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAddTodo = useCallback(async (name: string) => {
     // Simulate calling API to add a To-Do
     try {
@@ -50,6 +66,7 @@ const HomePage: React.FC = () => {
         setTimeout(resolve, 1000);
       });
       showSuccessMessage(`"${name}" is added successfully`);
+      reloadData();
     } catch (error) {
       showErrorMessage(`Error encountered when adding "${name}"`);
       throw error;
@@ -76,6 +93,7 @@ const HomePage: React.FC = () => {
         showSuccessMessage(
           `"${oldName}" is changed to "${newName}" successfully`
         );
+        reloadData();
       } catch (error) {
         showErrorMessage(
           `Error encountered when changing "${oldName}" to "${newName}"`
@@ -94,6 +112,7 @@ const HomePage: React.FC = () => {
         setTimeout(resolve, 1000);
       });
       showSuccessMessage(`"${name}" is deleted successfully`);
+      reloadData();
     } catch (error) {
       showErrorMessage(`Error encountered when deleting "${name}"`);
       throw error;
@@ -115,22 +134,6 @@ const HomePage: React.FC = () => {
     },
     [handleDeleteTodo]
   );
-
-  const reloadData = async () => {
-    // Simulate calling API to fetch all To-Dos
-    setLoading(true);
-    try {
-      const data = await new Promise<TodoItemType[]>((resolve, reject) => {
-        setTimeout(() => {
-          resolve(fakeData);
-        }, 1000);
-      });
-      setTodoData(data);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     reloadData();
