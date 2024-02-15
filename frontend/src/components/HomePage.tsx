@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Flex, List, message, Modal, Skeleton, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
+import fakeTodoData from "../fake-data/fakeTodo";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
@@ -12,14 +13,6 @@ const containerStyle: React.CSSProperties = {
   paddingLeft: "20%",
   paddingRight: "20%",
 };
-
-const fakeData: TodoItemType[] = [
-  { id: "0", name: "lorem" },
-  { id: "1", name: "ipsum" },
-  { id: "2", name: "dolor" },
-  { id: "3", name: "sit" },
-  { id: "4", name: "amet" },
-];
 
 const HomePage: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -49,7 +42,7 @@ const HomePage: React.FC = () => {
     try {
       const data = await new Promise<TodoItemType[]>((resolve, reject) => {
         setTimeout(() => {
-          resolve(fakeData);
+          resolve(fakeTodoData);
         }, 1000);
       });
       setTodoData(data);
@@ -119,7 +112,7 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
-  const prepareDelete = useCallback(
+  const openDeleteModal = useCallback(
     (item: TodoItemType) => {
       Modal.confirm({
         title: `Are you sure you want to delete "${item.name}"?`,
@@ -148,7 +141,7 @@ const HomePage: React.FC = () => {
     <List.Item
       actions={[
         <Button onClick={() => openEditModal(item)}>Edit</Button>,
-        <Button danger onClick={() => prepareDelete(item)}>
+        <Button danger onClick={() => openDeleteModal(item)}>
           Delete
         </Button>,
       ]}
