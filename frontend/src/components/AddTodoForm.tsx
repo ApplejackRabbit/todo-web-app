@@ -42,6 +42,7 @@ const AddTodoForm: React.FC<Props> = (props) => {
         <Form.Item
           name="name"
           label="Name"
+          required={false}
           rules={[
             {
               required: true,
