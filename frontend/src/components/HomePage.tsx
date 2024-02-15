@@ -23,7 +23,8 @@ const HomePage: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
-  const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const [itemInEdit, setItemInEdit] = useState<TodoItemType | null>(null);
 
   const showSuccessMessage = (content: string) => {
     messageApi.open({
@@ -52,8 +53,8 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
-  const handleEdit = useCallback(() => {
-    setEditModalOpen(true);
+  const handleEdit = useCallback((item: TodoItemType) => {
+    setItemInEdit(item);
   }, []);
 
   const handleDelete = useCallback(() => {
@@ -68,7 +69,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleEditModalCancel = useCallback(() => {
-    setEditModalOpen(false);
+    setItemInEdit(null);
   }, []);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const HomePage: React.FC = () => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={handleEdit}>Edit</Button>,
+                <Button onClick={() => handleEdit(item)}>Edit</Button>,
                 <Button danger onClick={handleDelete}>
                   Delete
                 </Button>,
@@ -99,7 +100,11 @@ const HomePage: React.FC = () => {
           )}
         />
       </Flex>
-      <EditTodoModal open={isEditModalOpen} onCancel={handleEditModalCancel} />
+      <EditTodoModal
+        open={!!itemInEdit}
+        onCancel={handleEditModalCancel}
+        defaultItem={itemInEdit}
+      />
     </>
   );
 };
