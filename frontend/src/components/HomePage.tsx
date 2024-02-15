@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Flex, List, Modal, Typography } from "antd";
+import { Button, Flex, List, message, Modal, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
 import type TodoItemType from "../types/TodoItemType";
@@ -20,8 +20,37 @@ const fakeData: TodoItemType[] = [
 ];
 
 const HomePage: React.FC = () => {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
   const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+
+  const showSuccessMessage = (content: string) => {
+    messageApi.open({
+      type: "success",
+      content,
+    });
+  };
+
+  const showErrorMessage = (content: string) => {
+    messageApi.open({
+      type: "error",
+      content,
+    });
+  };
+
+  const handleAddTodo = useCallback(async (name: string) => {
+    // Simulate calling API to add a To-Do
+    try {
+      await new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000);
+      });
+      showSuccessMessage(`"${name}" is added successfully`);
+    } catch (error) {
+      showErrorMessage(`Error encountered when adding "${name}"`);
+      throw error;
+    }
+  }, []);
 
   const handleEdit = useCallback(() => {
     setEditModalOpen(true);
@@ -48,9 +77,10 @@ const HomePage: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <Flex style={containerStyle} vertical gap="middle">
         <Title>To-Do</Title>
-        <AddTodoForm />
+        <AddTodoForm onAddTodo={handleAddTodo} />
         <List
           bordered
           itemLayout="horizontal"
