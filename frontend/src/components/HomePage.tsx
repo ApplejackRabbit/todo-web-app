@@ -100,7 +100,7 @@ const HomePage: React.FC = () => {
   const prepareDelete = useCallback(
     (item: TodoItemType) => {
       Modal.confirm({
-        title: "Are you sure you want to delete this To-Do?",
+        title: `Are you sure you want to delete "${item.name}"?`,
         okButtonProps: { danger: true },
         okText: "Delete",
         onOk: async () => {
