@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Form, Input, Modal } from "antd";
 import type { ModalProps } from "antd";
 import type TodoItemType from "../types/TodoItemType";
@@ -19,6 +19,8 @@ const EditTodoModal: React.FC<Props> = (props) => {
 
   const { open, onCancel, defaultItem, onEditTodo } = props;
 
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const handleOk = useCallback(() => {
     form.submit();
   }, []);
@@ -28,9 +30,11 @@ const EditTodoModal: React.FC<Props> = (props) => {
       const { name } = values;
       if (defaultItem && onEditTodo) {
         try {
+          setLoading(true);
           await onEditTodo(defaultItem, name);
         } catch (error) {
         } finally {
+          setLoading(false);
         }
       }
     },
@@ -48,6 +52,7 @@ const EditTodoModal: React.FC<Props> = (props) => {
       onOk={handleOk}
       title="Edit To-Do"
       okText="Edit"
+      okButtonProps={{ loading: isLoading }}
       destroyOnClose
     >
       <Form
@@ -70,7 +75,7 @@ const EditTodoModal: React.FC<Props> = (props) => {
           ]}
           {...formItemExtraProps}
         >
-          <Input />
+          <Input disabled={isLoading} />
         </Form.Item>
       </Form>
     </Modal>
