@@ -40,25 +40,6 @@ const HomePage: React.FC = () => {
     });
   };
 
-  const prepareEdit = useCallback((item: TodoItemType) => {
-    setItemToEdit(item);
-  }, []);
-
-  const endEdit = useCallback(() => {
-    setItemToEdit(null);
-  }, []);
-
-  const prepareDelete = useCallback(() => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this To-Do?",
-      okButtonProps: { danger: true },
-      okText: "Delete",
-      onOk: async () => {
-        // Delete the To-Do item
-      },
-    });
-  }, []);
-
   const handleAddTodo = useCallback(async (name: string) => {
     // Simulate calling API to add a To-Do
     try {
@@ -72,6 +53,14 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  const openEditModal = useCallback((item: TodoItemType) => {
+    setItemToEdit(item);
+  }, []);
+
+  const closeEditModal = useCallback(() => {
+    setItemToEdit(null);
+  }, []);
+
   const handleEditTodo = useCallback(
     async (oldItem: TodoItemType, newName: string) => {
       const { name: oldName } = oldItem;
@@ -80,7 +69,7 @@ const HomePage: React.FC = () => {
         await new Promise((resolve, reject) => {
           setTimeout(resolve, 1000);
         });
-        endEdit();
+        closeEditModal();
         showSuccessMessage(
           `"${oldName}" is changed to "${newName}" successfully`
         );
@@ -91,7 +80,37 @@ const HomePage: React.FC = () => {
         throw error;
       }
     },
-    [endEdit]
+    [closeEditModal]
+  );
+
+  const handleDeleteTodo = useCallback(async (item: TodoItemType) => {
+    const { name } = item;
+    // Simulate calling API to delete a To-Do
+    try {
+      await new Promise((resolve, reject) => {
+        setTimeout(resolve, 1000);
+      });
+      showSuccessMessage(`"${name}" is deleted successfully`);
+    } catch (error) {
+      showErrorMessage(`Error encountered when deleting "${name}"`);
+      throw error;
+    }
+  }, []);
+
+  const prepareDelete = useCallback(
+    (item: TodoItemType) => {
+      Modal.confirm({
+        title: "Are you sure you want to delete this To-Do?",
+        okButtonProps: { danger: true },
+        okText: "Delete",
+        onOk: async () => {
+          try {
+            await handleDeleteTodo(item);
+          } catch (error) {}
+        },
+      });
+    },
+    [handleDeleteTodo]
   );
 
   useEffect(() => {
@@ -111,8 +130,8 @@ const HomePage: React.FC = () => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={() => prepareEdit(item)}>Edit</Button>,
-                <Button danger onClick={prepareDelete}>
+                <Button onClick={() => openEditModal(item)}>Edit</Button>,
+                <Button danger onClick={() => prepareDelete(item)}>
                   Delete
                 </Button>,
               ]}
@@ -124,7 +143,7 @@ const HomePage: React.FC = () => {
       </Flex>
       <EditTodoModal
         open={!!itemToEdit}
-        onCancel={endEdit}
+        onCancel={closeEditModal}
         defaultItem={itemToEdit}
         onEditTodo={handleEditTodo}
       />
