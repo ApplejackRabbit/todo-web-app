@@ -41,6 +41,9 @@ const EditTodoModal: React.FC<Props> = (props) => {
     [defaultItem, onEditTodo]
   );
 
+  const modalExtraProps = {
+    ...(defaultItem && { title: `Edit "${defaultItem.name}"` }),
+  };
   const formItemExtraProps = {
     ...(defaultItem && { initialValue: defaultItem.name }),
   };
@@ -50,10 +53,10 @@ const EditTodoModal: React.FC<Props> = (props) => {
       open={open}
       onCancel={onCancel}
       onOk={handleOk}
-      title="Edit To-Do"
       okText="Edit"
       okButtonProps={{ loading: isLoading }}
       destroyOnClose
+      {...modalExtraProps}
     >
       <Form
         form={form}
