@@ -74,13 +74,20 @@ const HomePage: React.FC = () => {
 
   const handleEditTodo = useCallback(
     async (oldItem: TodoItemType, newName: string) => {
+      const { name: oldName } = oldItem;
       // Simulate calling API to edit a To-Do
       try {
         await new Promise((resolve, reject) => {
           setTimeout(resolve, 1000);
         });
         endEdit();
+        showSuccessMessage(
+          `"${oldName}" is changed to "${newName}" successfully`
+        );
       } catch (error) {
+        showErrorMessage(
+          `Error encountered when changing "${oldName}" to "${newName}"`
+        );
         throw error;
       }
     },
