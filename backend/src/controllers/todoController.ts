@@ -4,9 +4,9 @@ import type TodoItemType from "../types/TodoItemType";
 type CreateReqBody = Omit<TodoItemType, "id">;
 
 type UpdateReqParams = { id: string };
-type UpdateReqBody = Omit<TodoItemType, "id">;
+type UpdateReqBody = CreateReqBody;
 
-type DeleteReqParams = { id: string };
+type DeleteReqParams = UpdateReqParams;
 
 const listTodos: RequestHandler = (req, res) => {
   res.send("List To-Dos");

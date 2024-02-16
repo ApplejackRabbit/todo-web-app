@@ -4,6 +4,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "typescript": "^4.9.5"
   },
   "devDependencies": {
