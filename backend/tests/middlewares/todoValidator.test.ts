@@ -17,7 +17,7 @@ describe("todoValidator", () => {
     mockNext = jest.fn();
   });
 
-  xit("should respond 400 with error msg if creating To-Do with name missing", async () => {
+  it("should respond 400 with error msg if creating To-Do with name missing", async () => {
     mockRequest.body = {};
 
     await validatorTester(
@@ -33,7 +33,7 @@ describe("todoValidator", () => {
     });
   });
 
-  xit("should proceed to next middleware if creating To-Do with name", async () => {
+  it("should proceed to next middleware if creating To-Do with name", async () => {
     mockRequest.body = { name: "Test" };
 
     await validatorTester(
