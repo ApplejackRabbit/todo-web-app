@@ -11,6 +11,14 @@ const listTodos = async (): Promise<TodoItemType[]> => {
   return rows;
 };
 
+const getTodo = async (id: string): Promise<TodoItemType | undefined> => {
+  const { rows } = await pool.query<TodoItemType, [string]>(
+    "SELECT id::text, name FROM todo WHERE id = $1",
+    [id]
+  );
+  return rows[0];
+};
+
 const createTodo = async (name: string): Promise<TodoItemType> => {
   const { rows } = await pool.query<TodoItemType, [string]>(
     "INSERT INTO todo (name) VALUES ($1) RETURNING id::text, name",
@@ -37,6 +45,7 @@ const deleteTodo = async (id: string): Promise<Pick<TodoItemType, "id">> => {
 
 export default {
   listTodos,
+  getTodo,
   createTodo,
   updateTodo,
   deleteTodo,
