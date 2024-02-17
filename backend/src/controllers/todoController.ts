@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import todoServices from "../services/todoServices";
+import todoService from "../services/todoService";
 import type TodoItemType from "../types/TodoItemType";
 
 type ListResBody = { results: TodoItemType[] };
@@ -16,7 +16,7 @@ type DeleteResBody = Pick<TodoItemType, "id">;
 
 const listTodos: RequestHandler<{}, ListResBody> = async (req, res, next) => {
   try {
-    const todos = await todoServices.listTodos();
+    const todos = await todoService.listTodos();
     res.json({ results: todos });
   } catch (error) {
     next(error);
@@ -30,7 +30,7 @@ const createTodo: RequestHandler<{}, CreateResBody, CreateReqBody> = async (
 ) => {
   const { name } = req.body;
   try {
-    const todoCreated = await todoServices.createTodo(name);
+    const todoCreated = await todoService.createTodo(name);
     if (!todoCreated) {
       throw new Error("Something went wrong when creating To-Do");
     }
@@ -48,7 +48,7 @@ const updateTodo: RequestHandler<
   const { id } = req.params;
   const { name } = req.body;
   try {
-    const todoUpdated = await todoServices.updateTodo(id, name);
+    const todoUpdated = await todoService.updateTodo(id, name);
     if (!todoUpdated) {
       throw new Error("Something went wrong when updating To-Do");
     }
@@ -65,7 +65,7 @@ const deleteTodo: RequestHandler<DeleteReqParams, DeleteResBody> = async (
 ) => {
   const { id } = req.params;
   try {
-    const todoDeleted = await todoServices.deleteTodo(id);
+    const todoDeleted = await todoService.deleteTodo(id);
     if (!todoDeleted) {
       throw new Error("Something went wrong when deleting To-Do");
     }

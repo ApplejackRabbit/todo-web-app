@@ -3,7 +3,7 @@ import todoValidator from "../../src/middlewares/todoValidator";
 import validatorTester from "../../src/utils/validatorTester";
 import type TodoItemType from "../../src/types/TodoItemType";
 
-jest.mock("../../src/services/todoServices", () => {
+jest.mock("../../src/services/todoService", () => {
   const todoData: TodoItemType[] = [{ id: "1", name: "Test" }];
   return {
     __esModule: true,

@@ -1,7 +1,7 @@
 import { body, param, validationResult } from "express-validator";
 import type { ValidationChain, ValidationError } from "express-validator";
 import type { RequestHandler, Response } from "express";
-import todoServices from "../services/todoServices";
+import todoService from "../services/todoService";
 
 const nameValidationRule = (): ValidationChain =>
   body("name")
@@ -14,7 +14,7 @@ const idValidationRule = (): ValidationChain =>
   param("id")
     .escape()
     .custom(async (id: string) => {
-      const result = await todoServices.getTodo(id);
+      const result = await todoService.getTodo(id);
       if (!result) {
         throw new Error(`id '${id}' does not exist`);
       }
