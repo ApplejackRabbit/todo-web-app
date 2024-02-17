@@ -22,6 +22,10 @@ jest.mock("../../src/controllers/todoController", () => {
 });
 
 jest.mock("../../src/middlewares/todoValidator", () => {
+  const originalModule = jest.requireActual<
+    typeof import("../../src/middlewares/todoValidator")
+  >("../../src/middlewares/todoValidator");
+
   const makeMiddlewareMock = () =>
     jest.fn((req: Request, res: Response, next: NextFunction) => {
       next();
@@ -29,9 +33,15 @@ jest.mock("../../src/middlewares/todoValidator", () => {
   return {
     __esModule: true,
     default: {
-      createTodo: [makeMiddlewareMock()],
-      updateTodo: [makeMiddlewareMock()],
-      deleteTodo: [makeMiddlewareMock()],
+      createTodo: originalModule.default.createTodo.map((_) =>
+        makeMiddlewareMock()
+      ),
+      updateTodo: originalModule.default.updateTodo.map((_) =>
+        makeMiddlewareMock()
+      ),
+      deleteTodo: originalModule.default.deleteTodo.map((_) =>
+        makeMiddlewareMock()
+      ),
     },
   };
 });
