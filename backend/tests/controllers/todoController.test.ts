@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import todoController from "../../src/controllers/todoController";
-import todoServices from "../../src/services/todoServices";
+import todoService from "../../src/services/todoService";
 
-jest.mock("../../src/services/todoServices", () => {
+jest.mock("../../src/services/todoService", () => {
   return {
     __esModule: true,
     default: {
@@ -38,8 +38,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if error is thrown from DAO", async () => {
-      if (jest.isMockFunction(todoServices.listTodos)) {
-        todoServices.listTodos.mockRejectedValueOnce(new Error("Test Error"));
+      if (jest.isMockFunction(todoService.listTodos)) {
+        todoService.listTodos.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.listTodos(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -63,8 +63,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if error is thrown from DAO", async () => {
-      if (jest.isMockFunction(todoServices.createTodo)) {
-        todoServices.createTodo.mockRejectedValueOnce(new Error("Test Error"));
+      if (jest.isMockFunction(todoService.createTodo)) {
+        todoService.createTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.createTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -73,8 +73,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if DAO returns undefined", async () => {
-      if (jest.isMockFunction(todoServices.createTodo)) {
-        todoServices.createTodo.mockResolvedValueOnce(undefined);
+      if (jest.isMockFunction(todoService.createTodo)) {
+        todoService.createTodo.mockResolvedValueOnce(undefined);
       }
       await todoController.createTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -100,8 +100,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if error is thrown from DAO", async () => {
-      if (jest.isMockFunction(todoServices.updateTodo)) {
-        todoServices.updateTodo.mockRejectedValueOnce(new Error("Test Error"));
+      if (jest.isMockFunction(todoService.updateTodo)) {
+        todoService.updateTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.updateTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -110,8 +110,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if DAO returns undefined", async () => {
-      if (jest.isMockFunction(todoServices.updateTodo)) {
-        todoServices.updateTodo.mockResolvedValueOnce(undefined);
+      if (jest.isMockFunction(todoService.updateTodo)) {
+        todoService.updateTodo.mockResolvedValueOnce(undefined);
       }
       await todoController.updateTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -133,8 +133,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if error is thrown from DAO", async () => {
-      if (jest.isMockFunction(todoServices.deleteTodo)) {
-        todoServices.deleteTodo.mockRejectedValueOnce(new Error("Test Error"));
+      if (jest.isMockFunction(todoService.deleteTodo)) {
+        todoService.deleteTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.deleteTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
@@ -143,8 +143,8 @@ describe("todoController", () => {
     });
 
     it("should pass error to next function if DAO returns undefined", async () => {
-      if (jest.isMockFunction(todoServices.deleteTodo)) {
-        todoServices.deleteTodo.mockResolvedValueOnce(undefined);
+      if (jest.isMockFunction(todoService.deleteTodo)) {
+        todoService.deleteTodo.mockResolvedValueOnce(undefined);
       }
       await todoController.deleteTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
