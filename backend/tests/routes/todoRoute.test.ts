@@ -31,6 +31,7 @@ jest.mock("../../src/middlewares/todoValidator", () => {
     default: {
       createTodo: [makeMiddlewareMock()],
       updateTodo: [makeMiddlewareMock()],
+      deleteTodo: [makeMiddlewareMock()],
     },
   };
 });
@@ -81,6 +82,9 @@ describe("todoRoute", () => {
   it("should run all middlewares for DELETE /:id", async () => {
     await request(app).delete("/123");
 
+    todoValidator.deleteTodo.forEach((validator) => {
+      expect(validator).toHaveBeenCalled();
+    });
     expect(todoController.deleteTodo).toHaveBeenCalled();
   });
 });
