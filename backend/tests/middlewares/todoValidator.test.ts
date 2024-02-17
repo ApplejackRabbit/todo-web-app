@@ -1,6 +1,6 @@
+import type { Request, Response, NextFunction } from "express";
 import todoValidator from "../../src/middlewares/todoValidator";
 import validatorTester from "../../src/utils/validatorTester";
-import type { Request, Response, NextFunction } from "express";
 
 describe("todoValidator", () => {
   let mockRequest: Request;
