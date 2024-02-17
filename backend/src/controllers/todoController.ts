@@ -31,6 +31,9 @@ const createTodo: RequestHandler<{}, CreateResBody, CreateReqBody> = async (
   const { name } = req.body;
   try {
     const todoCreated = await todoServices.createTodo(name);
+    if (!todoCreated) {
+      throw new Error("Something went wrong when creating To-Do");
+    }
     res.status(201).json(todoCreated);
   } catch (error) {
     next(error);
@@ -46,6 +49,9 @@ const updateTodo: RequestHandler<
   const { name } = req.body;
   try {
     const todoUpdated = await todoServices.updateTodo(id, name);
+    if (!todoUpdated) {
+      throw new Error("Something went wrong when updating To-Do");
+    }
     res.json(todoUpdated);
   } catch (error) {
     next(error);
@@ -60,6 +66,9 @@ const deleteTodo: RequestHandler<DeleteReqParams, DeleteResBody> = async (
   const { id } = req.params;
   try {
     const todoDeleted = await todoServices.deleteTodo(id);
+    if (!todoDeleted) {
+      throw new Error("Something went wrong when deleting To-Do");
+    }
     res.json(todoDeleted);
   } catch (error) {
     next(error);
