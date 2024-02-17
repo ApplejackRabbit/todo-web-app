@@ -37,7 +37,7 @@ describe("todoController", () => {
       });
     });
 
-    it("should pass error to next function if something wrong", async () => {
+    it("should pass error to next function if error is thrown from DAO", async () => {
       if (jest.isMockFunction(todoServices.listTodos)) {
         todoServices.listTodos.mockRejectedValueOnce(new Error("Test Error"));
       }
@@ -62,13 +62,25 @@ describe("todoController", () => {
       });
     });
 
-    it("should pass error to next function if something wrong", async () => {
+    it("should pass error to next function if error is thrown from DAO", async () => {
       if (jest.isMockFunction(todoServices.createTodo)) {
         todoServices.createTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.createTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Test Error" })
+      );
+    });
+
+    it("should pass error to next function if DAO returns undefined", async () => {
+      if (jest.isMockFunction(todoServices.createTodo)) {
+        todoServices.createTodo.mockResolvedValueOnce(undefined);
+      }
+      await todoController.createTodo(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "Something went wrong when creating To-Do",
+        })
       );
     });
   });
@@ -87,13 +99,25 @@ describe("todoController", () => {
       });
     });
 
-    it("should pass error to next function if something wrong", async () => {
+    it("should pass error to next function if error is thrown from DAO", async () => {
       if (jest.isMockFunction(todoServices.updateTodo)) {
         todoServices.updateTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.updateTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Test Error" })
+      );
+    });
+
+    it("should pass error to next function if DAO returns undefined", async () => {
+      if (jest.isMockFunction(todoServices.updateTodo)) {
+        todoServices.updateTodo.mockResolvedValueOnce(undefined);
+      }
+      await todoController.updateTodo(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "Something went wrong when updating To-Do",
+        })
       );
     });
   });
@@ -108,13 +132,25 @@ describe("todoController", () => {
       expect(mockResponse.json).toHaveBeenCalledWith({ id: "1" });
     });
 
-    it("should pass error to next function if something wrong", async () => {
+    it("should pass error to next function if error is thrown from DAO", async () => {
       if (jest.isMockFunction(todoServices.deleteTodo)) {
         todoServices.deleteTodo.mockRejectedValueOnce(new Error("Test Error"));
       }
       await todoController.deleteTodo(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Test Error" })
+      );
+    });
+
+    it("should pass error to next function if DAO returns undefined", async () => {
+      if (jest.isMockFunction(todoServices.deleteTodo)) {
+        todoServices.deleteTodo.mockResolvedValueOnce(undefined);
+      }
+      await todoController.deleteTodo(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "Something went wrong when deleting To-Do",
+        })
       );
     });
   });

@@ -10,6 +10,6 @@ router.post("/", todoValidator.createTodo, todoController.createTodo);
 
 router.put("/:id", todoValidator.updateTodo, todoController.updateTodo);
 
-router.delete("/:id", todoController.deleteTodo);
+router.delete("/:id", todoValidator.deleteTodo, todoController.deleteTodo);
 
 export default router;
