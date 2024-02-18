@@ -37,8 +37,8 @@ jest.mock("../src/services/todoService", () => {
 });
 
 describe("app", () => {
-  it("should return 200 with list of todos for GET /todo", async () => {
-    const response = await request(app).get("/todo");
+  it("should return 200 with list of todos for GET /todo/all", async () => {
+    const response = await request(app).get("/todo/all");
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ results: [{ id: "1", name: "Test" }] });
   });
@@ -76,7 +76,7 @@ describe("app", () => {
     if (jest.isMockFunction(todoService.listTodos)) {
       todoService.listTodos.mockRejectedValueOnce(new Error("Test Error"));
     }
-    const response = await request(app).get("/todo");
+    const response = await request(app).get("/todo/all");
     expect(response.status).toBe(500);
     expect(response.body).toEqual({ message: "Test Error" });
   });

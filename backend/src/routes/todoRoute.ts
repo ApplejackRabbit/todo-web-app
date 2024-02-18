@@ -4,7 +4,7 @@ import todoValidator from "../middlewares/todoValidator";
 
 const router = express.Router();
 
-router.get("/", todoController.listTodos);
+router.get("/all", todoController.listTodos);
 
 router.post("/", todoValidator.createTodo, todoController.createTodo);
 

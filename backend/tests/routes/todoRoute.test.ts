@@ -59,8 +59,8 @@ describe("todoRoute", () => {
     jest.clearAllMocks();
   });
 
-  it("should run all middlewares for GET /", async () => {
-    await request(app).get("/");
+  it("should run all middlewares for GET /all", async () => {
+    await request(app).get("/all");
 
     expect(todoController.listTodos).toHaveBeenCalled();
   });
