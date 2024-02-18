@@ -70,6 +70,9 @@ describe("app", () => {
   it("should return 404 for unknown route", async () => {
     const response = await request(app).get("/unknown");
     expect(response.status).toBe(404);
+    expect(response.body).toEqual({
+      message: "Request path '/unknown' not found",
+    });
   });
 
   it("should return 500 with an error message if error is thrown", async () => {
