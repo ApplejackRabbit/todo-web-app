@@ -13,7 +13,9 @@ app.use(express.json());
 app.use("/todo", todoRouter);
 
 app.get("*", (req, res) => {
-  res.status(404).json({});
+  res
+    .status(404)
+    .json({ message: `Request path '${req.baseUrl}${req.path}' not found` });
 });
 
 app.use(jsonErrorHandler);
