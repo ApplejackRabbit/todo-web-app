@@ -10,10 +10,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
 app.use("/todo", todoRouter);
 
 app.get("*", (req, res) => {
