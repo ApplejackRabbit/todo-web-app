@@ -7,7 +7,7 @@ import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
 
-const skeletonCount = 5;
+const skeletonCount = 2;
 
 const containerStyle: React.CSSProperties = {
   paddingLeft: "20%",
@@ -19,6 +19,7 @@ const HomePage: React.FC = () => {
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isInitialLoaded, setInitialLoaded] = useState<boolean>(false);
 
   const [itemToEdit, setItemToEdit] = useState<TodoItemType | null>(null);
 
@@ -115,8 +116,14 @@ const HomePage: React.FC = () => {
   );
 
   useEffect(() => {
-    reloadData();
+    const initialLoad = async () => {
+      await reloadData();
+      setInitialLoaded(true);
+    };
+    initialLoad();
   }, []);
+
+  const showSkeleton = isLoading || !isInitialLoaded;
 
   const makeDummyData = (): TodoItemType[] =>
     Array(skeletonCount)
@@ -151,8 +158,8 @@ const HomePage: React.FC = () => {
         <List
           bordered
           itemLayout="horizontal"
-          dataSource={isLoading ? makeDummyData() : todoData}
-          renderItem={isLoading ? makeSkeletonElement : makeListItemElement}
+          dataSource={showSkeleton ? makeDummyData() : todoData}
+          renderItem={showSkeleton ? makeSkeletonElement : makeListItemElement}
         />
       </Flex>
       <EditTodoModal
