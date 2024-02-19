@@ -10,7 +10,21 @@ The frontend project is located in the `frontend` folder. All the below commands
 
 ### Build
 
-Use `npm run build` to make a production build. The output is generated under the `build` folder.
+Run `npm ci` to install all npm dependencies.
+
+Before building the app, some environment variables need to be set. For frontend, the following are required -
+
+- `REACT_APP_SERVER_DOMAIN` - The server domain for the backend. It should be `http://localhost:8080` if the backend server is running on the same machine as the frontend.
+
+The prefix `REACT_APP` is needed for `Create React App` to recognize it.
+
+To add the environment variables, create a `.env` file in the `frontend` folder and add the variables' key and value. Example `.env` file -
+
+```
+REACT_APP_SERVER_DOMAIN=http://localhost:8080
+```
+
+Once the `.env` is created, use `npm run build` to make a production build. The output is generated under the `build` folder.
 
 ### Serve
 
@@ -68,11 +82,39 @@ The backend project is located in the `backend` folder. All the below commands a
 
 ### Build
 
-Use `npm run build` to make a production build. The output is generated under the `dist` folder.
+Run `npm ci` to install all npm dependencies.
+
+Before building the app, some environment variables need to be set. For backend, the following are required -
+
+- `POSTGRES_HOST` - The host for the PostgreSQL database. It should be `localhost` if the database is running on the same machine as the backend.
+- `POSTGRES_PORT` - The port that the PostgreSQL database is running on. Depending on the database setup, usually it should be `5432` by default.
+- `POSTGRES_DB` - The name of the database to connect.
+- `POSTGRES_USER` - The user name to be used to login the database.
+- `POSTGRES_PASSWORD` - The password for the database user.
+
+To add the environment variables, create a `.env` file in the `backend` folder and add the variables' key and value. Example `.env` file -
+
+```
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+```
+
+Once the `.env` is created, use `npm run build` to make a production build. The output is generated under the `dist` folder.
 
 ### Serve
 
-Use `npm run serve` to start the backend server. The backend server will be listening on `http://localhost:8080`.
+A PostgreSQL database with a table is required for the backend app to function correctly. For table creation, there is a `create_table.sql` script located in the `db` folder for this purpose. One can use `psql` to run the script. Example for running the script against a local PostgreSQL database on Mac/Linux -
+
+```
+psql -U postgres -d postgres -a -f db/create_table.sql
+```
+
+For Windows, file paths use backslash (\\) instead of forward slash (/) so the script path needs to be adjusted, i.e. `db\create_table.sql`.
+
+Once the database setup is done, use `npm run serve` to start the backend server. The backend server will be listening on `http://localhost:8080`.
 
 ### Test
 
