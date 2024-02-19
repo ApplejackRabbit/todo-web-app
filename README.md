@@ -106,10 +106,10 @@ Once the `.env` is created, use `npm run build` to make a production build. The 
 
 ### Serve
 
-A PostgreSQL database with a table is required for the backend app to function correctly. For table creation, there is a `create_table.sql` script located in the `db` folder for this purpose. One can use `psql` to run the script, example for running on Mac/Linux -
+A PostgreSQL database with a table is required for the backend app to function correctly. For table creation, there is a `create_table.sql` script located in the `db` folder for this purpose. One can use `psql` to run the script. Example for running the script against a local PostgreSQL database on Mac/Linux -
 
 ```
-psql -h {POSTGRES_HOST} -p {POSTGRES_PORT} -U {POSTGRES_USER} -d {POSTGRES_DB} -a -f db/create_table.sql
+psql -U postgres -d postgres -a -f db/create_table.sql
 ```
 
 For Windows, file paths use backslash (\\) instead of forward slash (/) so the script path needs to be adjusted, i.e. `db\create_table.sql`.
