@@ -1,21 +1,22 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { setupServer } from "msw/node";
 import HomePage from "../../components/HomePage";
 import fakeTodoData from "../../fake-data/fakeTodo";
+import testRequestHandlers from "../../utils/testRequestHandlers";
 
 describe("HomePage", () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
+  const server = setupServer(...testRequestHandlers);
 
-  afterEach(() => {
-    jest.useRealTimers();
-  });
+  beforeAll(() => server.listen());
+
+  afterEach(() => server.resetHandlers());
+
+  afterAll(() => server.close());
 
   it("renders correctly", async () => {
     render(<HomePage />);
     expect(screen.getByText("To-Do")).toBeInTheDocument();
-    jest.runAllTimers();
 
     await waitFor(() => {
       fakeTodoData.forEach((item) => {
@@ -34,7 +35,6 @@ describe("HomePage", () => {
     const firstItem = fakeTodoData[0];
 
     render(<HomePage />);
-    jest.runAllTimers();
 
     const editButtons = await screen.findAllByRole("button", {
       name: "Edit",
@@ -51,7 +51,6 @@ describe("HomePage", () => {
     const firstItem = fakeTodoData[0];
 
     render(<HomePage />);
-    jest.runAllTimers();
 
     const deleteButtons = await screen.findAllByRole("button", {
       name: "Delete",
