@@ -6,7 +6,7 @@ const pool = new Pool(dbConfig);
 
 const listTodos = async (): Promise<TodoItemType[]> => {
   const { rows } = await pool.query<TodoItemType>(
-    "SELECT id::text, name FROM todo ORDER BY id DESC"
+    "SELECT id::text, name FROM todo ORDER BY id::INT DESC"
   );
   return rows;
 };
