@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Flex, List, message, Modal, Skeleton, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
-import fakeTodoData from "../fake-data/fakeTodo";
+import apiClient from "../network/apiClient";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
 
-const skeletonCount = 5;
+const skeletonCount = 2;
 
 const containerStyle: React.CSSProperties = {
   paddingLeft: "20%",
@@ -19,6 +19,7 @@ const HomePage: React.FC = () => {
 
   const [todoData, setTodoData] = useState<TodoItemType[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isInitialLoaded, setInitialLoaded] = useState<boolean>(false);
 
   const [itemToEdit, setItemToEdit] = useState<TodoItemType | null>(null);
 
@@ -37,15 +38,10 @@ const HomePage: React.FC = () => {
   };
 
   const reloadData = async () => {
-    // Simulate calling API to fetch all To-Dos
     setLoading(true);
     try {
-      const data = await new Promise<TodoItemType[]>((resolve, reject) => {
-        setTimeout(() => {
-          resolve(fakeTodoData);
-        }, 1000);
-      });
-      setTodoData(data);
+      const { results } = await apiClient.listTodos();
+      setTodoData(results);
     } catch (error) {
     } finally {
       setLoading(false);
@@ -53,11 +49,8 @@ const HomePage: React.FC = () => {
   };
 
   const handleAddTodo = useCallback(async (name: string) => {
-    // Simulate calling API to add a To-Do
     try {
-      await new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000);
-      });
+      await apiClient.createTodo(name);
       showSuccessMessage(`"${name}" is added successfully`);
       reloadData();
     } catch (error) {
@@ -76,12 +69,9 @@ const HomePage: React.FC = () => {
 
   const handleEditTodo = useCallback(
     async (oldItem: TodoItemType, newName: string) => {
-      const { name: oldName } = oldItem;
-      // Simulate calling API to edit a To-Do
+      const { id, name: oldName } = oldItem;
       try {
-        await new Promise((resolve, reject) => {
-          setTimeout(resolve, 1000);
-        });
+        await apiClient.updateTodo(id, newName);
         closeEditModal();
         showSuccessMessage(
           `"${oldName}" is changed to "${newName}" successfully`
@@ -98,12 +88,9 @@ const HomePage: React.FC = () => {
   );
 
   const handleDeleteTodo = useCallback(async (item: TodoItemType) => {
-    const { name } = item;
-    // Simulate calling API to delete a To-Do
+    const { id, name } = item;
     try {
-      await new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000);
-      });
+      await apiClient.deleteTodo(id);
       showSuccessMessage(`"${name}" is deleted successfully`);
       reloadData();
     } catch (error) {
@@ -129,8 +116,14 @@ const HomePage: React.FC = () => {
   );
 
   useEffect(() => {
-    reloadData();
+    const initialLoad = async () => {
+      await reloadData();
+      setInitialLoaded(true);
+    };
+    initialLoad();
   }, []);
+
+  const showSkeleton = isLoading || !isInitialLoaded;
 
   const makeDummyData = (): TodoItemType[] =>
     Array(skeletonCount)
@@ -165,8 +158,8 @@ const HomePage: React.FC = () => {
         <List
           bordered
           itemLayout="horizontal"
-          dataSource={isLoading ? makeDummyData() : todoData}
-          renderItem={isLoading ? makeSkeletonElement : makeListItemElement}
+          dataSource={showSkeleton ? makeDummyData() : todoData}
+          renderItem={showSkeleton ? makeSkeletonElement : makeListItemElement}
         />
       </Flex>
       <EditTodoModal
