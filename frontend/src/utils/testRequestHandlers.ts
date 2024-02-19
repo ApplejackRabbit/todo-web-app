@@ -16,10 +16,15 @@ type DeleteResBody = Pick<TodoItemType, "id">;
 
 type ErrorResBody = { message: string };
 
-let sequenceNum = 5;
-const todoData: TodoItemType[] = [...fakeTodoData];
+let sequenceNum = 1;
+let todoData: TodoItemType[] = [...fakeTodoData];
 
-const listTodos = http.get<{}, {}, ListResBody>("/todo/all", () => {
+export const resetData = () => {
+  sequenceNum = 1;
+  todoData = [...fakeTodoData];
+};
+
+const listTodos = http.get<{}, {}, ListResBody>("/todo/all", async () => {
   return HttpResponse.json({
     results: todoData,
   });
@@ -70,4 +75,4 @@ const deleteTodo = http.delete<
   );
 });
 
-export default [listTodos, createTodo, updateTodo, deleteTodo];
+export const handlers = [listTodos, createTodo, updateTodo, deleteTodo];
