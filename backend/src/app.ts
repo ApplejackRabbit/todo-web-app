@@ -1,5 +1,6 @@
 import express from "express";
 import type { ErrorRequestHandler } from "express";
+import cors from "cors";
 import todoRouter from "./routes/todoRoute";
 
 const jsonErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -8,6 +9,7 @@ const jsonErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/todo", todoRouter);
