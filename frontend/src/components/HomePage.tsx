@@ -52,7 +52,6 @@ const HomePage: React.FC = () => {
         message
       );
       showErrorMessage(formatted);
-      throw error;
     } finally {
       setLoading(false);
     }
