@@ -3,6 +3,8 @@ import { Button, Flex, List, message, Modal, Skeleton, Typography } from "antd";
 import AddTodoForm from "./AddTodoForm";
 import EditTodoModal from "./EditTodoModal";
 import apiClient from "../network/apiClient";
+import { getApiErrorInfo } from "../utils/apiErrorUtils";
+import { formatApiErrorMessage } from "../utils/formatUtils";
 import type TodoItemType from "../types/TodoItemType";
 
 const { Title } = Typography;
@@ -43,6 +45,14 @@ const HomePage: React.FC = () => {
       const { results } = await apiClient.listTodos();
       setTodoData(results);
     } catch (error) {
+      const { status, message } = { ...getApiErrorInfo(error) };
+      const formatted = formatApiErrorMessage(
+        `Error encountered when getting all To-Dos`,
+        status,
+        message
+      );
+      showErrorMessage(formatted);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -54,7 +64,13 @@ const HomePage: React.FC = () => {
       showSuccessMessage(`"${name}" is added successfully`);
       reloadData();
     } catch (error) {
-      showErrorMessage(`Error encountered when adding "${name}"`);
+      const { status, message } = { ...getApiErrorInfo(error) };
+      const formatted = formatApiErrorMessage(
+        `Error encountered when adding "${name}"`,
+        status,
+        message
+      );
+      showErrorMessage(formatted);
       throw error;
     }
   }, []);
@@ -78,9 +94,13 @@ const HomePage: React.FC = () => {
         );
         reloadData();
       } catch (error) {
-        showErrorMessage(
-          `Error encountered when changing "${oldName}" to "${newName}"`
+        const { status, message } = { ...getApiErrorInfo(error) };
+        const formatted = formatApiErrorMessage(
+          `Error encountered when changing "${oldName}" to "${newName}"`,
+          status,
+          message
         );
+        showErrorMessage(formatted);
         throw error;
       }
     },
@@ -94,7 +114,13 @@ const HomePage: React.FC = () => {
       showSuccessMessage(`"${name}" is deleted successfully`);
       reloadData();
     } catch (error) {
-      showErrorMessage(`Error encountered when deleting "${name}"`);
+      const { status, message } = { ...getApiErrorInfo(error) };
+      const formatted = formatApiErrorMessage(
+        `Error encountered when deleting "${name}"`,
+        status,
+        message
+      );
+      showErrorMessage(formatted);
       throw error;
     }
   }, []);
